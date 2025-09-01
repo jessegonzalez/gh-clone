@@ -41,9 +41,32 @@ fi
 if [ -d "$GH_CLONE_DIR/$OWNER/$REPO" ]; then
   echo "repository clone exists, syncing instead..."
   echo
-  cd "$GH_CLONE_DIR/$OWNER/$REPO" && gh repo sync
+
+  cd "$GH_CLONE_DIR/$OWNER/$REPO"
+
+  if [[ -n $(git status --short) ]]; then
+    echo "uncommitted/untracked local changes detected..."
+    echo
+
+    uncommitted=true
+    git stash --all --message "gh clone sync $(date)"
+    echo
+  fi
+
+  gh repo sync
+  echo
+
+  if [[ -n ${uncommitted} ]]; then
+    echo "restoring uncommitted/untracked local changes..."
+    echo
+
+    git stash pop
+    echo
+  fi
+
 else
   gh repo clone "$OWNER/$REPO" "$GH_CLONE_DIR/$OWNER/$REPO"
+  echo
 fi
 
 ## optionally open cloned repo in editor
