@@ -2,7 +2,7 @@
 
 set -e
 
-GH_CLONE_DIR=${GH_CLONE_DIR:=${HOME}/Workspace/github.com}
+GH_CLONE_DIR=${GH_CLONE_DIR:=${HOME}/work/github.com}
 
 help(){
   echo
